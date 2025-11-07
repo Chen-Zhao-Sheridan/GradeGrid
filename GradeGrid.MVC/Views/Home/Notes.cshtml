@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Notes";
+}
+
+<h2>Personal Notes</h2>
+<a asp-action="Create" class="btn btn-primary">Add Note</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Class Title</th>
+            <th>Topic</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var note in Model) {
+            <tr>
+                <td>@note.ClassTitle</td>
+                <td>@note.Topic</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@note.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@note.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

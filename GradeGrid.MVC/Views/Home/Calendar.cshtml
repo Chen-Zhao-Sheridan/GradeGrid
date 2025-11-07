@@ -1,0 +1,35 @@
+@{
+    
+    ViewData["Title"] = "Calendar";
+}
+
+<h2>Calendar</h2>
+<a asp-action="Create" class="btn btn-success">+ Add Event</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Course</th>
+            <th>Academic?</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var evt in Model) {
+            <tr>
+                <td>@evt.Title</td>
+                <td>@evt.StartTime.ToString("g")</td>
+                <td>@evt.EndTime.ToString("g")</td>
+                <td>@evt.CourseName</td>
+                <td>@(evt.IsAcademic ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@evt.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@evt.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

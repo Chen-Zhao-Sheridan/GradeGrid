@@ -24,6 +24,22 @@ namespace GradeGrid.MVC.Controllers
             return View();
         }
 
+        public IActionResult TileNavigation()
+        {
+            return View();
+        }
+
+        public IActionResult Notes()
+        {
+            return View();
+        }
+
+        public IActionResult Calendar()
+        {
+            return View();
+        }
+
+
         public IActionResult CoursePlanner()
         {
             List<Course> courseList = [
