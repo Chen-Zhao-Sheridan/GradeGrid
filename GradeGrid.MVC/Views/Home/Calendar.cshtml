@@ -1,12 +1,17 @@
 @{
-    
     ViewData["Title"] = "Calendar";
+    var events = new[]
+    {
+        new { Id = 1, Title = "PROG30000 Presentation", StartTime = DateTime.Now.AddDays(1).AddHours(14), EndTime = DateTime.Now.AddDays(1).AddHours(15), CourseName = "PROG30000", IsAcademic = true },
+        new { Id = 2, Title = "DBAS30634 Assignment Due", StartTime = DateTime.Now.AddDays(2).AddHours(23), EndTime = DateTime.Now.AddDays(2).AddHours(23).AddMinutes(59), CourseName = "DBAS30634", IsAcademic = true },
+        new { Id = 3, Title = "Weekend Gym", StartTime = DateTime.Now.AddDays(3).AddHours(18), EndTime = DateTime.Now.AddDays(3).AddHours(19), CourseName = "Personal", IsAcademic = false }
+    };
 }
 
 <h2>Calendar</h2>
-<a asp-action="Create" class="btn btn-success">+ Add Event</a>
+<a asp-action="Create" class="btn btn-success mb-3">+ Add Event</a>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Title</th>
@@ -18,7 +23,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var evt in Model) {
+        @foreach (var evt in events)
+        {
             <tr>
                 <td>@evt.Title</td>
                 <td>@evt.StartTime.ToString("g")</td>

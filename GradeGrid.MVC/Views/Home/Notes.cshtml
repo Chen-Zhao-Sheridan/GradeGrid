@@ -1,11 +1,17 @@
 @{
     ViewData["Title"] = "Notes";
+    var notes = new[]
+    {
+        new { Id = 1, ClassTitle = "PROG30000", Topic = "Enterprise Project Checkpoint" },
+        new { Id = 2, ClassTitle = "DBAS30634", Topic = "Data Warehouse Design – Star Schema" },
+        new { Id = 3, ClassTitle = "SYST30049", Topic = "Use Case Diagrams and UML Notes" }
+    };
 }
 
 <h2>Personal Notes</h2>
-<a asp-action="Create" class="btn btn-primary">Add Note</a>
+<a asp-action="Create" class="btn btn-primary mb-3">Add Note</a>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Class Title</th>
@@ -14,7 +20,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var note in Model) {
+        @foreach (var note in notes)
+        {
             <tr>
                 <td>@note.ClassTitle</td>
                 <td>@note.Topic</td>
