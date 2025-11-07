@@ -1,8 +1,57 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="container mt-5 text-center">
+    <h1 class="display-4 fw-bold mb-3 text-primary">Welcome to GradeGrid</h1>
+    <p class="lead text-muted mb-5">
+        Organize your courses, track your grades, and never miss a deadline again.
+    </p>
+    <a class="btn btn-lg btn-success px-4 py-2" asp-controller="Home" asp-action="TileNavigation">
+        Explore Dashboard
+    </a>
 </div>
+
+<!-- Divider -->
+<hr class="my-5" />
+
+<!-- Dashboard Preview -->
+<div class="container text-center">
+    <h2 class="mb-4 fw-semibold">Your Dashboard Overview</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+                <h5 class="text-secondary">Upcoming Deadlines</h5>
+                <h3 class="text-danger fw-bold mt-2">3</h3>
+                <p class="text-muted small">Assignments due this week</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+                <h5 class="text-secondary">Average Grade</h5>
+                <h3 class="text-success fw-bold mt-2">85%</h3>
+                <p class="text-muted small">Across all courses</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+                <h5 class="text-secondary">Completed Courses</h5>
+                <h3 class="text-primary fw-bold mt-2">4 / 6</h3>
+                <p class="text-muted small">This semester</p>
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-outline-primary mt-3" asp-controller="Home" asp-action="TileNavigation">
+        View Full Dashboard →
+    </a>
+</div>
+
+<!-- Footer -->
+<footer class="text-center mt-5 mb-3 text-muted small">
+    © 2025 GradeGrid | Built with ASP.NET Core MVC
+</footer>
