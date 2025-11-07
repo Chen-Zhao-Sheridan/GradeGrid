@@ -27,15 +27,15 @@ namespace GradeGrid.MVC.Controllers
         public IActionResult CoursePlanner()
         {
             List<Course> courseList = [
-                new Course { CourseCode = "CS10001", Hour = 7, Day = DayOfWeek.Monday },
-                new Course { CourseCode = "MATH20003", Hour = 9, Day = DayOfWeek.Monday },
-                new Course { CourseCode = "ENGL15000", Hour = 13, Day = DayOfWeek.Monday },
-                new Course { CourseCode = "PHYS11000", Hour = 9, Day = DayOfWeek.Wednesday },
-                new Course { CourseCode = "CHEM20010", Hour = 11, Day = DayOfWeek.Thursday },
-                new Course { CourseCode = "BIO10090", Hour = 14, Day = DayOfWeek.Thursday },
-                new Course { CourseCode = "ART30000", Hour = 9, Day = DayOfWeek.Friday },
-                new Course { CourseCode = "HIST20020", Hour = 12, Day = DayOfWeek.Friday },
-                new Course { CourseCode = "PSYC100", Hour = 15, Day = DayOfWeek.Friday },
+                new Course { Id = 1, CourseCode = "CS10001", Hour = 7, Day = DayOfWeek.Monday },
+                new Course { Id = 2, CourseCode = "MATH20003", Hour = 9, Day = DayOfWeek.Monday },
+                new Course { Id = 3, CourseCode = "ENGL15000", Hour = 13, Day = DayOfWeek.Monday },
+                new Course { Id = 4, CourseCode = "PHYS11000", Hour = 9, Day = DayOfWeek.Wednesday },
+                new Course { Id = 5, CourseCode = "CHEM20010", Hour = 11, Day = DayOfWeek.Thursday },
+                new Course { Id = 6, CourseCode = "BIO10090", Hour = 14, Day = DayOfWeek.Thursday },
+                new Course { Id = 7, CourseCode = "ART30000", Hour = 9, Day = DayOfWeek.Friday },
+                new Course { Id = 8, CourseCode = "HIST20020", Hour = 12, Day = DayOfWeek.Friday },
+                new Course { Id = 9, CourseCode = "PSYC100", Hour = 15, Day = DayOfWeek.Friday },
                 ];
 
             var viewModel = new CoursePlannerViewModel() { Courses = courseList };
