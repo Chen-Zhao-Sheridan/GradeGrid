@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Tile Navigation";
+}
+
+<div class="container mt-5 text-center">
+    <h2 class="display-6 mb-4">Navigate Your Courses</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <a class="btn btn-outline-primary w-100 p-4 mb-3" asp-controller="Home" asp-action="Index">
+                Dashboard
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-outline-success w-100 p-4 mb-3" asp-controller="Home" asp-action="CoursePlanner">
+                Course Planner
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-outline-info w-100 p-4 mb-3" asp-controller="Home" asp-action="AssignmentsAndEvals">
+                Assignments & Evaluations
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-outline-warning w-100 p-4 mb-3" asp-controller="Home" asp-action="Calendar">
+                Calendar
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-outline-secondary w-100 p-4 mb-3" asp-controller="Home" asp-action="Notes">
+                Notes
+            </a>
+        </div>
+    </div>
+</div>
