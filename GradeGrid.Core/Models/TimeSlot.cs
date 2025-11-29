@@ -13,6 +13,6 @@ namespace GradeGrid.Core.Models
         public required TimeSpan StartTime { get; set; }
         public required TimeSpan EndTime { get; set; }
         public required int SectionId { get; set; }
-        public required Section Section { get; set; }
+        public Section? Section { get; set; }
     }
 }

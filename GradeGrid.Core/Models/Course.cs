@@ -11,8 +11,8 @@ namespace GradeGrid.Core.Models
     {
         public required int Id { get; set; }
         public required string CourseCode { get; set; }
-        public Term Term { get; set; }
-        public int Year { get; set; }
+        public required Term Term { get; set; }
+        public required int Year { get; set; }
 
         // Navigation Properties
         public ICollection<Section> Sections { get; set; } = new List<Section>();

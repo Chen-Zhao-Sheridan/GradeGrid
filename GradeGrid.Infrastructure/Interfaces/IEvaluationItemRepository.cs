@@ -9,10 +9,12 @@ namespace GradeGrid.Infrastructure.Interfaces
 {
     public interface IEvaluationItemRepository
     {
-        List<EvaluationItem> GetAll();
-        EvaluationItem? FindById(int Id);
-        void Add(EvaluationItem request);
-        void Delete(int requestId);
+        Task<List<EvaluationItem>> GetAll();
+        Task<EvaluationItem?> FindById(int Id);
+        Task Add(EvaluationItem request);
+        Task Update(EvaluationItem request);
+        Task Delete(int requestId);
+        Task<List<EvaluationItem>> FindByCourseId(int courseId);
     }
 }
 

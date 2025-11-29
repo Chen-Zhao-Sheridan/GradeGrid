@@ -11,7 +11,7 @@ namespace GradeGrid.Core.Models
         public required int Id { get; set; }
         public required string SectionCode { get; set; }
         public required int CourseId { get; set; }
-        public required Course Course { get; set; }
+        public Course? Course { get; set; }
 
         public ICollection<TimeSlot> TimeSlots { get; set; } = new List<TimeSlot>();
     }

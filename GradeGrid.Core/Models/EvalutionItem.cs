@@ -9,6 +9,6 @@ namespace GradeGrid.Core.Models
         public required EvaluationType Type { get; set; }
         public string Notes { get; set; } = string.Empty;
         public required int CourseId { get; set; }
-        public required Course Course { get; set; }
+        public Course? Course { get; set; }
     }
 }

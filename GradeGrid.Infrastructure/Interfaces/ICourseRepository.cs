@@ -1,18 +1,22 @@
-﻿using GradeGrid.Core.Models;
+﻿using GradeGrid.Core.Enums;
+using GradeGrid.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GradeGrid.Infrastructure
+namespace GradeGrid.Infrastructure.Interfaces
 {
     public interface ICourseRepository
     {
-        List<Course> GetAll();
-        Course? FindById(int Id);
-        void Add(Course request);
-        void Delete(int requestId);
+        Task<List<Course>> GetAll();
+        Task<Course?> FindById(int id);
+        Task Add(Course course);
+        Task Update(Course course);
+        Task Delete(int id);
+        Task<List<Course>> GetCoursesBySemester(Term term, int year);
+        Task<List<Course>> GetCoursesWithSections(List<int> courseIds);
     }
 }
 
