@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GradeGrid.Infrastructure
+namespace GradeGrid.Infrastructure.Interfaces
 {
     public interface IEvaluationItemRepository
     {

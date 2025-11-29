@@ -1,4 +1,5 @@
 ﻿using GradeGrid.Core.Models;
+using GradeGrid.Infrastructure.Interfaces;
 
 namespace GradeGrid.Infrastructure
 {

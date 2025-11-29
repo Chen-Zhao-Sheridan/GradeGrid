@@ -1,11 +1,14 @@
-﻿namespace GradeGrid.Core.Models
+﻿using GradeGrid.Core.Enums;
+
+namespace GradeGrid.Core.Models
 {
     public class EvaluationItem
     {
         public required int Id { get; set; }
         public required string Title { get; set; }
-        public required string Type { get; set; }
-        public string? Description { get; set; }
-        public List<string> RelevantResources { get; set; } = new List<string>();
+        public required EvaluationType Type { get; set; }
+        public string Notes { get; set; } = string.Empty;
+        public required int CourseId { get; set; }
+        public required Course Course { get; set; }
     }
 }
