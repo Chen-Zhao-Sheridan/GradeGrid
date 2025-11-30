@@ -48,5 +48,13 @@ namespace GradeGrid.Infrastructure
                 .OrderBy(e => e.DueDate)
                 .ToListAsync();
         }
+
+        public async Task<List<EvaluationItem>> FindByCourseId(int courseId)
+        {
+            return await _context.EvaluationItems
+                .Where(e => e.CourseId == courseId)
+                .OrderBy(e => e.DueDate)
+                .ToListAsync();
+        }
     }
 }
