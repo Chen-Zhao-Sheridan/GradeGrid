@@ -1,5 +1,7 @@
-﻿using GradeGrid.Core.Models;
+﻿using GradeGrid.Core.Enums;
+using GradeGrid.Core.Models;
 using GradeGrid.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GradeGrid.Infrastructure
 {
@@ -11,30 +13,57 @@ namespace GradeGrid.Infrastructure
             _context = ctx;
         }
 
-        public void Add(Course request)
+        public async Task Add(Course course)
         {
-            _context.Courses.Add(request);
-            _context.SaveChanges();
+            await _context.Courses.AddAsync(course);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int courseId)
+        public async Task Update(Course course)
         {
-            var courseToRemove = FindById(courseId);
+            _context.Courses.Update(course);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Delete(int courseId)
+        {
+            var courseToRemove = await FindById(courseId);
             if (courseToRemove != null)
             {
                 _context.Courses.Remove(courseToRemove);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public Course? FindById(int Id)
+        public async Task<Course?> FindById(int id)
         {
-            return _context.Courses.Find(Id);
+            // Remember to actually include the nav properties
+            return await _context.Courses
+                .Include(c => c.Sections)
+                .ThenInclude(s => s.TimeSlots)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public List<Course> GetAll()
+        public async Task<List<Course>> GetAll()
         {
-            return _context.Courses.ToList();
+            return await _context.Courses.ToListAsync();
+        }
+
+        public async Task<List<Course>> GetCoursesBySemester(Term term, int year)
+        {
+            return await _context.Courses
+                .Where(c => c.Term == term && c.Year == year)
+                .Include(c => c.Sections)
+                .ToListAsync();
+        }
+
+        public async Task<List<Course>> GetCoursesWithSections(List<int> courseIds)
+        {
+            return await _context.Courses
+                .Where(c => courseIds.Contains(c.Id))
+                .Include(c => c.Sections)
+                .ThenInclude(s => s.TimeSlots)
+                .ToListAsync();
         }
     }
 }
