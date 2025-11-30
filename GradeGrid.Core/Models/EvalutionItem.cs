@@ -10,5 +10,6 @@ namespace GradeGrid.Core.Models
         public string Notes { get; set; } = string.Empty;
         public required int CourseId { get; set; }
         public Course? Course { get; set; }
+        public required DateTime DueDate { get; set; }
     }
 }

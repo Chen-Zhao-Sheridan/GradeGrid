@@ -1,5 +1,6 @@
 ﻿using GradeGrid.Core.Models;
 using GradeGrid.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GradeGrid.Infrastructure
 {
@@ -11,30 +12,41 @@ namespace GradeGrid.Infrastructure
             _context = ctx;
         }
 
-        public void Add(EvaluationItem request)
+        public async Task Add(EvaluationItem item)
         {
-            _context.EvaluationItems.Add(request);
-            _context.SaveChanges();
+            await _context.EvaluationItems.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int evaluationItemId)
+        public async Task Update(EvaluationItem item)
         {
-            var evaluationItemToRemove = FindById(evaluationItemId);
+            _context.EvaluationItems.Update(item);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Delete(int evaluationItemId)
+        {
+            var evaluationItemToRemove = await FindById(evaluationItemId);
             if (evaluationItemToRemove != null)
             {
                 _context.EvaluationItems.Remove(evaluationItemToRemove);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public EvaluationItem? FindById(int Id)
+        public async Task<EvaluationItem?> FindById(int Id)
         {
-            return _context.EvaluationItems.Find(Id);
+            return await _context.EvaluationItems
+                .Include(e => e.Course)
+                .FirstOrDefaultAsync(e => e.Id == Id);
         }
 
-        public List<EvaluationItem> GetAll()
+        public async Task<List<EvaluationItem>> GetAll()
         {
-            return _context.EvaluationItems.ToList();
+            return await _context.EvaluationItems
+                .Include(e => e.Course)
+                .OrderBy(e => e.DueDate)
+                .ToListAsync();
         }
     }
 }
