@@ -65,5 +65,11 @@ namespace GradeGrid.Infrastructure
                 .ThenInclude(s => s.TimeSlots)
                 .ToListAsync();
         }
+
+        public async Task<bool> Exists(string courseCode, Term term, int year)
+        {
+            return await _context.Courses
+                .AnyAsync(c => c.CourseCode == courseCode && c.Term == term && c.Year == year);
+        }
     }
 }

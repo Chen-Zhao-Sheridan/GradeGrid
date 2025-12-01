@@ -17,6 +17,7 @@ namespace GradeGrid.Infrastructure.Interfaces
         Task Delete(int id);
         Task<List<Course>> GetCoursesBySemester(Term term, int year);
         Task<List<Course>> GetCoursesWithSections(List<int> courseIds);
+        Task<bool> Exists(string courseCode, Term term, int year); // added to enforce this better then just crashing
     }
 }
 
