@@ -1,3 +1,4 @@
+using GradeGrid.Core;
 using GradeGrid.Infrastructure;
 using GradeGrid.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<GradeGridDbContext>(opt => // redirect migrations 
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IEvaluationItemRepository, EvaluationItemRepository>();
+builder.Services.AddScoped<IScheduleGenerator, CourseScheduleGenerator>();
 
 var app = builder.Build();
 
