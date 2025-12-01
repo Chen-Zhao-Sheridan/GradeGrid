@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GradeGrid.Infrastructure
 {
-    internal class SectionRepository : ISectionRepository
+    public class SectionRepository : ISectionRepository
     {
         private GradeGridDbContext _context;
         public SectionRepository(GradeGridDbContext ctx)
