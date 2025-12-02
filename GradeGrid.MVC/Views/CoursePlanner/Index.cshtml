@@ -1,0 +1,147 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model GradeGrid.MVC.ViewModels.CoursePlannerViewModel
+
+@{
+    ViewData["Title"] = "Course Schedule Planner";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <!-- sidebar -->
+        <div class="col-md-3">
+            <h4 class="mb-3">Course Planner</h4>
+
+            <!-- Year/Season form for semester -->
+            <form method="get" asp-action="Index" class="mb-3">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <label class="form-label fw-bold small">Semester</label>
+                        <div class="input-group input-group-sm">
+                            <select asp-for="Term" class="form-select" onchange="this.form.submit()">
+                                <option value="0">Winter</option>
+                                <option value="1">Summer</option>
+                                <option value="2">Fall</option>
+                            </select>
+                            <input asp-for="Year" class="form-control" style="max-width: 80px;" type="number" onchange="this.form.submit()" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- list of courses with checkboxes per semster -->
+            <form method="post" asp-action="Generate">
+                <input type="hidden" asp-for="Year" />
+                <input type="hidden" asp-for="Term" />
+
+                <div class="card mb-3">
+                    <div class="card-header py-2">
+                        <span class="small fw-bold">Available Courses</span>
+                    </div>
+                    <!-- loop past all courses in the viewmodel, make a checkbox for each one-->
+                    <div class="course-scroll-list">
+                        <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                                @if (Model.AvailableCourses.Any())
+                                {
+                                    @foreach (var course in Model.AvailableCourses)
+                                    {
+                                        var isChecked = Model.SelectedCourseIds.Contains(course.Id);
+                                        <tr>
+                                            <td class="ps-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="SelectedCourseIds"
+                                                           value="@course.Id" id="c_@course.Id"
+                                                           class="form-check-input course-selector"
+                                                           @(isChecked ? "checked" : "") 
+                                                    />
+
+                                                    <label class="form-check-label small" for="c_@course.Id">
+                                                        <strong>@course.CourseCode</strong>
+                                                        <span class="text-muted">(@course.SectionCount sections)</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td class="text-center small text-muted p-3">No courses found.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- this is a big form so submitting it calls MVC to return with the valid course plans-->
+                <button type="submit" id="btnGenerate" class="btn btn-primary w-100 mb-3 btn-sm">
+                    Generate Schedules
+                </button>
+            </form>
+
+            <!-- display all the generated options -->
+            <h6 class="small fw-bold text-muted">Generated Options</h6>
+            <div class="list-group schedule-scroll-list" id="scheduleListGroup">
+                @if (Model.GeneratedSchedules.Any())
+                {
+                    @foreach (var plan in Model.GeneratedSchedules)
+                    {
+                        <button type="button" class="list-group-item list-group-item-action schedule-btn"
+                                data-id="@plan.Id">
+                            <div class="d-flex w-100 justify-content-between">
+                                <span class="fw-bold small">@plan.Name</span>
+                                <span class="badge bg-secondary">@plan.Classes.Count</span>
+                            </div>
+                        </button>
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item text-center text-muted small">No valid schedules.</div>
+                }
+            </div>
+        </div>
+
+        <!-- Week/Hour table -->
+        <div class="col-md-9">
+            <h5 id="planTitle">Weekly Schedule</h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered schedule-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;"></th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int hour = 7; hour <= 22; hour++)
+                        {
+                            <tr>
+                                <td class="time-cell">
+                                    <span>@hour:00</span>
+                                </td>
+                                <td id="cell-1-@hour" class="grid-cell"></td>
+                                <td id="cell-2-@hour" class="grid-cell"></td>
+                                <td id="cell-3-@hour" class="grid-cell"></td>
+                                <td id="cell-4-@hour" class="grid-cell"></td>
+                                <td id="cell-5-@hour" class="grid-cell"></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
