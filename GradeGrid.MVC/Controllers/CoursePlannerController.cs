@@ -2,6 +2,7 @@
 using GradeGrid.MVC.ViewModels;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using System.Text.Json;
 
 namespace GradeGrid.MVC.Controllers
@@ -35,6 +36,84 @@ namespace GradeGrid.MVC.Controllers
             await RequestAndPopulateAvailableCourses(model);
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Generate(CoursePlannerViewModel model)
+        {
+            // this should be already generated from previous get, but dont trust user
+            await RequestAndPopulateAvailableCourses(model);
+
+            if (model.SelectedCourseIds == null || !model.SelectedCourseIds.Any())
+            {
+                ModelState.AddModelError("", "Please select at least one course.");
+                return View("Index", model);
+            }
+
+            // make the list<int> of course id's and send to API POST
+            var jsonContent = new StringContent(
+                JsonSerializer.Serialize(model.SelectedCourseIds),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.PostAsync($"{ApiBaseUrl}/Courses/generate_schedule", jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                // loose coupling, rebuild Generated Schedule object
+                var apiSchedules = JsonSerializer.Deserialize<List<GeneratedScheduleDto>>(content, _jsonOptions);
+
+                if (apiSchedules != null)
+                {
+                    // map dtos -> viewmodels
+                    model.GeneratedSchedules = apiSchedules.Select(MapToViewModel).ToList();
+                    model.SerializedSchedules = JsonSerializer.Serialize(model.GeneratedSchedules, _jsonOptions);
+                }
+            }
+            else
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"API Error: {errorMsg}");
+            }
+
+            return View("Index", model);
+        }
+
+        // map dto (deseralized json) to viewmodels for MVC frontend
+        private GeneratedScheduleViewModel MapToViewModel(GeneratedScheduleDto dto)
+        {
+            var viewModel = new GeneratedScheduleViewModel
+            {
+                Id = dto.OptionNumber,
+                Name = $"Option {dto.OptionNumber}"
+            };
+
+            // Dtos have Schedule -> Sections -> TimeSlots
+            // this needs to be turned into a Day, Start, Duration for the viewmodel
+
+            foreach (var section in dto.Sections)
+            {
+                foreach (var slot in section.TimeSlots)
+                {
+                    viewModel.Classes.Add(
+                        new ClassSessionViewModel
+                        {
+                            CourseCode = section.CourseCode,
+                            SectionCode = section.SectionCode,
+                            Day = slot.Day,
+                            StartHour = slot.StartTime.Hour,
+                            Duration = slot.EndTime.Hour - slot.StartTime.Hour,
+                            TimeLabel = $"{slot.StartTime:HH:mm} - {slot.EndTime:HH:mm}"
+                        }
+                    );
+                }
+            }
+
+            return viewModel;
         }
 
         private Term GetCurrentTerm()

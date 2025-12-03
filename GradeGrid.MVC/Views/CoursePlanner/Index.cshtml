@@ -144,4 +144,11 @@
     </div>
 </div>
 
+<!-- init planner -->
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        initPlanner(@Html.Raw(Model.SerializedSchedules));
+    });
+</script>
 }
