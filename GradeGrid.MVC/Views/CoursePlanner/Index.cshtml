@@ -350,9 +350,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" formaction="/Planner/DeleteCourse"
-                            name="courseId" id="meta_DelId" class="btn btn-danger me-auto">
-                        Delete Course
+                    <button type="submit"
+                            formaction="/CoursePlanner/DeleteCourse"
+                            name="courseId"
+                            id="meta_DelId"
+                            class="btn btn-danger me-auto"
+                            onclick="return confirm('Are you sure you want to delete this course? This cannot be undone.');">
+                        <i class="bi bi-trash"></i> Delete
                     </button>
 
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

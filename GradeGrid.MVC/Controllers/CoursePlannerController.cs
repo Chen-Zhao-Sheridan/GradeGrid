@@ -227,6 +227,14 @@ namespace GradeGrid.MVC.Controllers
             return RedirectToAction("Index", new { year = form.Year, term = form.Term });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteCourse(int courseId, int year, Term term)
+        {
+            var client = _clientFactory.CreateClient();
+            var response = await client.DeleteAsync($"{ApiBaseUrl}/Courses/{courseId}");
+            return RedirectToAction("Index", new { year, term });
+        }
+
         // map dto (deseralized json) to viewmodels for MVC frontend
         private GeneratedScheduleViewModel MapToViewModel(GeneratedScheduleDto dto)
         {
