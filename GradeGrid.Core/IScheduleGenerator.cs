@@ -1,4 +1,5 @@
-﻿using GradeGrid.Core.Models;
+﻿using GradeGrid.Core.DTOs;
+using GradeGrid.Core.Models;
 
 namespace GradeGrid.Core
 {

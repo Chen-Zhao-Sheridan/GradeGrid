@@ -1,4 +1,5 @@
 ﻿using GradeGrid.Core.Enums;
+using GradeGrid.MVC.FormModels;
 using GradeGrid.MVC.ViewModels;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc;
@@ -116,6 +117,74 @@ namespace GradeGrid.MVC.Controllers
             return viewModel;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateCourse(CreateCourseFormModel form)
+        {
+            if (string.IsNullOrWhiteSpace(form.CourseCode))
+            {
+                return RedirectToAction("Index", new { error = "Course Code is required" });
+            }
+
+            // form is from html user space, need to transform into dto to send to api
+            var apiDto = new CreateCourseDto
+            {
+                CourseCode = form.CourseCode,
+                Year = form.Year,
+                Term = form.Term,
+                Sections = new List<CreateSectionDto>()
+            };
+
+            foreach (var secForm in form.Sections)
+            {
+                // skip empty sections
+                if (string.IsNullOrWhiteSpace(secForm.SectionCode)) continue;
+
+                var secDto = new CreateSectionDto
+                {
+                    SectionCode = secForm.SectionCode,
+                    TimeSlots = new List<CreateTimeSlotDto>()
+                };
+
+                foreach (var slotForm in secForm.TimeSlots)
+                {
+                    // skip empty times
+                    if (string.IsNullOrWhiteSpace(slotForm.StartTime) || string.IsNullOrWhiteSpace(slotForm.EndTime)) continue;
+
+                    // html time is string, need to map to timeonly
+                    if (TimeOnly.TryParse(slotForm.StartTime, out var start) && TimeOnly.TryParse(slotForm.EndTime, out var end))
+                    {
+                        secDto.TimeSlots.Add(
+                            new CreateTimeSlotDto
+                            {
+                                Day = slotForm.Day,
+                                StartTime = start,
+                                EndTime = end
+                            }
+                        );
+                    }
+                }
+
+                // if no timeslots, this is an empty section, dont add
+                if (secDto.TimeSlots.Any()) apiDto.Sections.Add(secDto);
+                
+            }
+
+            // if we have sections, this is a valid course, so call api and add it
+            if (apiDto.Sections.Any())
+            {
+                // if the course is a valid course, send request to add to api
+
+                var client = _clientFactory.CreateClient();
+                var json = JsonSerializer.Serialize(apiDto);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"{ApiBaseUrl}/Courses", content);
+            }
+
+            // reload page when done
+            return RedirectToAction("Index", new { Year = form.Year, Term = form.Term });
+        }
+
         private Term GetCurrentTerm()
         {
             int month = DateTime.Now.Month;
@@ -183,6 +252,29 @@ namespace GradeGrid.MVC.Controllers
             public string SectionCode { get; set; } = string.Empty;
             public string CourseCode { get; set; } = string.Empty;
             public List<TimeSlotDto> TimeSlots { get; set; } = new();
+        }
+
+        public class CreateCourseDto
+        {
+            public string CourseCode { get; set; } = string.Empty;
+            public Term Term { get; set; }
+            public int Year { get; set; }
+            public List<CreateSectionDto> Sections { get; set; } = new();
+        }
+
+        public class CreateSectionDto
+        {
+            public string SectionCode { get; set; } = string.Empty;
+            public List<CreateTimeSlotDto> TimeSlots { get; set; } = new();
+        }
+
+        public class CreateTimeSlotDto
+        {
+            public DayOfWeek Day { get; set; }
+
+            // utilizing TimeOnly to match your API
+            public TimeOnly StartTime { get; set; }
+            public TimeOnly EndTime { get; set; }
         }
     }
 }

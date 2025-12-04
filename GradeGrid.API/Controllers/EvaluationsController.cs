@@ -1,4 +1,4 @@
-﻿using GradeGrid.API.DTOs;
+﻿using GradeGrid.Core.DTOs;
 using GradeGrid.Core.Models;
 using GradeGrid.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;

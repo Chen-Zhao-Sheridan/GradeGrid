@@ -1,5 +1,5 @@
-﻿using GradeGrid.API.DTOs;
-using GradeGrid.Core;
+﻿using GradeGrid.Core;
+using GradeGrid.Core.DTOs;
 using GradeGrid.Core.Enums;
 using GradeGrid.Core.Models;
 using GradeGrid.Infrastructure.Interfaces;
