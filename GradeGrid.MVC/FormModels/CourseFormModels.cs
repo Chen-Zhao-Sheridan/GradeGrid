@@ -1,4 +1,4 @@
-﻿using GradeGrid.Core.Enums;
+﻿using GradeGrid.MVC.DTOs;
 
 namespace GradeGrid.MVC.FormModels
 {

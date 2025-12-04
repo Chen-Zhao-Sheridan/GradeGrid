@@ -1,5 +1,4 @@
-﻿using GradeGrid.Core.Enums;
-using GradeGrid.Core.Models;
+﻿using GradeGrid.MVC.DTOs;
 
 namespace GradeGrid.MVC.ViewModels
 {
