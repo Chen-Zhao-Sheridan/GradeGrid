@@ -54,6 +54,7 @@ namespace GradeGrid.Infrastructure
             return await _context.Courses
                 .Where(c => c.Term == term && c.Year == year)
                 .Include(c => c.Sections)
+                .ThenInclude(s => s.TimeSlots)
                 .ToListAsync();
         }
 

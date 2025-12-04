@@ -63,3 +63,77 @@ function drawGrid(classes) {
         }
     });
 }
+
+function openMetaModal(id, code, year, term) {
+    $('#meta_Id').val(id);
+    $('#meta_DelId').val(id);
+    $('#meta_Code').val(code);
+    $('#meta_Year').val(year);
+    $('#meta_Term').val(term);
+
+    new bootstrap.Modal(document.getElementById('metaModal')).show();
+}
+
+function openSectionsModal(id) {
+    // 1. Set Hidden ID
+    $('#sec_Id').val(id);
+
+    // reset and close modal
+    $('#sectionsModal input[type="text"]').val('');
+    $('#sectionsModal input[type="time"]').val('');
+    $('#sectionsModal select').val(1);
+    $('#sectionsModal .accordion-collapse').removeClass('show');
+    $('#sectionsModal .accordion-button').addClass('collapsed').attr('aria-expanded', 'false');
+
+    $('#es_0').addClass('show');
+    $('#sectionsModal button[data-bs-target="#es_0"]').removeClass('collapsed').attr('aria-expanded', 'true');
+
+    // show modal
+    new bootstrap.Modal(document.getElementById('sectionsModal')).show();
+
+    // window.availableCourses should have been saved into global
+    const course = window.availableCourses.find(c => c.Id === id);
+
+    if (!course || !course.Sections) return;
+
+    const maxSections = 5;
+    const count = Math.min(course.Sections.length, maxSections);
+
+    for (let i = 0; i < count; i++) {
+        const sec = course.Sections[i];
+
+        const secCode = sec.SectionCode || sec.sectionCode;
+        $(`input[name="Sections[${i}].SectionCode"]`).val(secCode);
+
+        // expand if data exists
+        if (i > 0) {
+            $(`#es_${i}`).addClass('show');
+            $(`#sectionsModal button[data-bs-target="#es_${i}"]`)
+                .removeClass('collapsed')
+                .attr('aria-expanded', 'true');
+        }
+
+        // fill time slots with global data
+        const slots = sec.TimeSlots || sec.timeSlots || [];
+        const maxSlots = 2;
+        const slotCount = Math.min(slots.length, maxSlots);
+
+        for (let j = 0; j < slotCount; j++) {
+            const slot = slots[j];
+            const day = slot.Day || slot.day;
+            const start = slot.StartTime || slot.startTime;
+            const end = slot.EndTime || slot.endTime;
+
+            $(`select[name="Sections[${i}].TimeSlots[${j}].Day"]`).val(day);
+            $(`input[name="Sections[${i}].TimeSlots[${j}].StartTime"]`).val(formatTimeForInput(start));
+            $(`input[name="Sections[${i}].TimeSlots[${j}].EndTime"]`).val(formatTimeForInput(end));
+        }
+    }
+}
+
+function formatTimeForInput(timeStr) {
+    if (!timeStr) return "";
+    // API returns "08:00:00", take first 5 chars
+    if (timeStr.length >= 5) return timeStr.substring(0, 5);
+    return timeStr;
+}

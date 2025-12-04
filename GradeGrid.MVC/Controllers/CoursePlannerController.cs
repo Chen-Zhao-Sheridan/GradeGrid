@@ -84,39 +84,6 @@ namespace GradeGrid.MVC.Controllers
             return View("Index", model);
         }
 
-        // map dto (deseralized json) to viewmodels for MVC frontend
-        private GeneratedScheduleViewModel MapToViewModel(GeneratedScheduleDto dto)
-        {
-            var viewModel = new GeneratedScheduleViewModel
-            {
-                Id = dto.OptionNumber,
-                Name = $"Option {dto.OptionNumber}"
-            };
-
-            // Dtos have Schedule -> Sections -> TimeSlots
-            // this needs to be turned into a Day, Start, Duration for the viewmodel
-
-            foreach (var section in dto.Sections)
-            {
-                foreach (var slot in section.TimeSlots)
-                {
-                    viewModel.Classes.Add(
-                        new ClassSessionViewModel
-                        {
-                            CourseCode = section.CourseCode,
-                            SectionCode = section.SectionCode,
-                            Day = slot.Day,
-                            StartHour = slot.StartTime.Hour,
-                            Duration = slot.EndTime.Hour - slot.StartTime.Hour,
-                            TimeLabel = $"{slot.StartTime:HH:mm} - {slot.EndTime:HH:mm}"
-                        }
-                    );
-                }
-            }
-
-            return viewModel;
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateCourse(CreateCourseFormModel form)
         {
@@ -185,6 +152,114 @@ namespace GradeGrid.MVC.Controllers
             return RedirectToAction("Index", new { Year = form.Year, Term = form.Term });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateMetadata(int id, string courseCode, int year, Term term)
+        {
+            var dto = new { CourseCode = courseCode, Year = year, Term = term };
+            var client = _clientFactory.CreateClient();
+            var response = await client.PutAsJsonAsync($"{ApiBaseUrl}/Courses/{id}", dto);
+
+            return RedirectToAction("Index", new { year, term });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReplaceSections(int courseId, CreateCourseFormModel form)
+        {
+            var client = _clientFactory.CreateClient();
+
+            // get course from API
+            var getResponse = await client.GetAsync($"{ApiBaseUrl}/Courses/{courseId}");
+            if (!getResponse.IsSuccessStatusCode) return NotFound();
+
+            var json = await getResponse.Content.ReadAsStringAsync();
+            var existingCourse = JsonSerializer.Deserialize<CourseDto>(json, _jsonOptions);
+
+
+            var sectionsToDelete = new List<int>();
+            if (existingCourse != null && existingCourse.Sections != null)
+            {
+                foreach (var section in existingCourse.Sections)
+                {
+                    sectionsToDelete.Add(section.Id);
+                }
+            }
+
+
+            // make new sections, same logic as in CreateCourse
+            foreach (var secForm in form.Sections)
+            {
+                if (string.IsNullOrWhiteSpace(secForm.SectionCode)) continue;
+
+                var apiSectionDto = new CreateSectionDto
+                {
+                    SectionCode = secForm.SectionCode,
+                    TimeSlots = new List<CreateTimeSlotDto>()
+                };
+
+                foreach (var slotForm in secForm.TimeSlots)
+                {
+                    if (!string.IsNullOrWhiteSpace(slotForm.StartTime) && !string.IsNullOrWhiteSpace(slotForm.EndTime))
+                    {
+                        if (TimeOnly.TryParse(slotForm.StartTime, out var start) && TimeOnly.TryParse(slotForm.EndTime, out var end))
+                        {
+                            apiSectionDto.TimeSlots.Add(
+                                new CreateTimeSlotDto
+                                {
+                                    Day = slotForm.Day,
+                                    StartTime = start,
+                                    EndTime = end
+                                }
+                            );
+                        }
+                    }
+                }
+
+                if (apiSectionDto.TimeSlots.Any()) await client.PostAsJsonAsync($"{ApiBaseUrl}/Courses/{courseId}/sections", apiSectionDto);
+                
+            }
+
+            // delete after add
+            foreach(var sectionToDeleteId in sectionsToDelete)
+            {
+                await client.DeleteAsync($"{ApiBaseUrl}/Sections/{sectionToDeleteId}");
+            }
+
+            return RedirectToAction("Index", new { year = form.Year, term = form.Term });
+        }
+
+        // map dto (deseralized json) to viewmodels for MVC frontend
+        private GeneratedScheduleViewModel MapToViewModel(GeneratedScheduleDto dto)
+        {
+            var viewModel = new GeneratedScheduleViewModel
+            {
+                Id = dto.OptionNumber,
+                Name = $"Option {dto.OptionNumber}"
+            };
+
+            // Dtos have Schedule -> Sections -> TimeSlots
+            // this needs to be turned into a Day, Start, Duration for the viewmodel
+
+            foreach (var section in dto.Sections)
+            {
+                foreach (var slot in section.TimeSlots)
+                {
+                    viewModel.Classes.Add(
+                        new ClassSessionViewModel
+                        {
+                            CourseCode = section.CourseCode,
+                            SectionCode = section.SectionCode,
+                            Day = slot.Day,
+                            StartHour = slot.StartTime.Hour,
+                            Duration = slot.EndTime.Hour - slot.StartTime.Hour,
+                            TimeLabel = $"{slot.StartTime:HH:mm} - {slot.EndTime:HH:mm}"
+                        }
+                    );
+                }
+            }
+
+            return viewModel;
+        }
+
         private Term GetCurrentTerm()
         {
             int month = DateTime.Now.Month;
@@ -217,6 +292,7 @@ namespace GradeGrid.MVC.Controllers
                             SectionCount = c.Sections?.Count ?? 0
                         }
                     ).ToList();
+                    model.SerializedAvailableCourses = JsonSerializer.Serialize(courses, _jsonOptions);
                 }
             }
         }
@@ -230,6 +306,7 @@ namespace GradeGrid.MVC.Controllers
         }
         public class SectionDto
         {
+            public int Id { get; set; }
             public string SectionCode { get; set; } = string.Empty;
             public List<TimeSlotDto> TimeSlots { get; set; } = new();
         }

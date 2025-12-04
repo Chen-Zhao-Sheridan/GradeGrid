@@ -10,7 +10,10 @@ namespace GradeGrid.MVC.ViewModels
         public List<CourseSummary> AvailableCourses { get; set; } = new();
         public List<int> SelectedCourseIds { get; set; } = new();
         public List<GeneratedScheduleViewModel> GeneratedSchedules { get; set; } = new();
+
+        // js data passthrough
         public string SerializedSchedules { get; set; } = "[]";
+        public string SerializedAvailableCourses { get; set; } = "[]";
     }
 
     public class CourseSummary
