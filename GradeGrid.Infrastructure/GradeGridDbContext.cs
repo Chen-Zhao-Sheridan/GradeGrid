@@ -11,6 +11,8 @@ namespace GradeGrid.Infrastructure
         public DbSet<Section> Sections { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<EvaluationItem> EvaluationItems { get; set; }
+        public DbSet<CalendarEvent> CalendarEvents { get; set; }
+        public DbSet<Note> Notes { get; set; }
 
         public GradeGridDbContext(DbContextOptions<GradeGridDbContext> options) : base(options) { }
 
