@@ -9,7 +9,7 @@ namespace GradeGrid.MVC.Controllers
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly JsonSerializerOptions _jsonOptions;
-        private const string ApiBaseUrl = "https://localhost:7233/api";
+        private const string ApiBaseUrl = "https://localhost:7000/api";
 
         public AssignmentsAndEvalsController(IHttpClientFactory clientFactory)
         {
