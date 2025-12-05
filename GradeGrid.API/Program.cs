@@ -18,6 +18,7 @@ builder.Services.AddDbContext<GradeGridDbContext>(opt => // redirect migrations 
 
 // dependency injection
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IEvaluationItemRepository, EvaluationItemRepository>();
 
 var app = builder.Build();

@@ -8,10 +8,10 @@ namespace GradeGrid.Core.Models
 {
     public class TimeSlot
     {
-        public required int Id { get; set; }
+        public int Id { get; set; }
         public required DayOfWeek Day { get; set; }
-        public required TimeSpan StartTime { get; set; }
-        public required TimeSpan EndTime { get; set; }
+        public required TimeOnly StartTime { get; set; }
+        public required TimeOnly EndTime { get; set; }
         public required int SectionId { get; set; }
         public Section? Section { get; set; }
     }

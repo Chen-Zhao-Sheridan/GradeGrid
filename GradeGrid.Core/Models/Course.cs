@@ -9,7 +9,7 @@ namespace GradeGrid.Core.Models
 {
     public class Course
     {
-        public required int Id { get; set; }
+        public int Id { get; set; }
         public required string CourseCode { get; set; }
         public required Term Term { get; set; }
         public required int Year { get; set; }
