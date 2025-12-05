@@ -7,43 +7,21 @@ namespace GradeGrid.MVC.Controllers
 {
     public class HomeController : Controller
     {
+<<<<<<< HEAD
         /*
         private readonly ILogger<HomeController> _logger;
+=======
+            private readonly ILogger<HomeController> _logger;
+            private readonly HttpClient _apiClient;
+>>>>>>> a5909737e8306bc0972e496404a4708510c48a3e
 
-        private readonly List<Course> courseList = [
-        new Course { Id = 1, CourseCode = "CS10001", Hour = 7, Day = DayOfWeek.Monday },
-                new Course { Id = 2, CourseCode = "MATH20003", Hour = 9, Day = DayOfWeek.Monday },
-                new Course { Id = 3, CourseCode = "ENGL15000", Hour = 13, Day = DayOfWeek.Monday },
-                new Course { Id = 4, CourseCode = "PHYS11000", Hour = 9, Day = DayOfWeek.Wednesday },
-                new Course { Id = 5, CourseCode = "CHEM20010", Hour = 11, Day = DayOfWeek.Thursday },
-                new Course { Id = 6, CourseCode = "BIO10090", Hour = 14, Day = DayOfWeek.Thursday },
-                new Course { Id = 7, CourseCode = "ART30000", Hour = 9, Day = DayOfWeek.Friday },
-                new Course { Id = 8, CourseCode = "HIST20020", Hour = 12, Day = DayOfWeek.Friday },
-                new Course { Id = 9, CourseCode = "PSYC100", Hour = 15, Day = DayOfWeek.Friday },
-                ];
-
-        private readonly List<EvaluationItem> _allItems = new List<EvaluationItem>
-        {
-            new EvaluationItem { Id = 1, Title = "Assignment #1", Type = "Assignment", Description = "Info from the Assignments/Quiz Page Itself is in this area", RelevantResources = { "Link To Relevant Slate Resource #1", "Link To Relevant Slate Resource #2", "Link To Relevant Slate Resource #3" } },
-            new EvaluationItem { Id = 2, Title = "Assignment #2", Type = "Assignment", Description = "This is the description for the second assignment.", RelevantResources = { "Link To Resource A", "Link To Resource B" } },
-            new EvaluationItem { Id = 3, Title = "Quiz #1", Type = "Quiz", Description = "This is the first quiz.", RelevantResources = { "Link To Quiz Resource 1" } },
-            new EvaluationItem { Id = 4, Title = "Quiz #2", Type = "Quiz", Description = "This is the second quiz." },
-            new EvaluationItem { Id = 5, Title = "Assignment #3", Type = "Assignment", Description = "Description for assignment 3." },
-            new EvaluationItem { Id = 6, Title = "Assignment #4", Type = "Assignment", Description = "Description for assignment 4." },
-            new EvaluationItem { Id = 7, Title = "Quiz #3", Type = "Quiz", Description = "Description for quiz 3." },
-            new EvaluationItem { Id = 8, Title = "Final Project", Type = "Assignment", Description = "Details about the final project.", RelevantResources = { "Project Guidelines", "Submission Portal Link" } }
-        };
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+            public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
+            {
+                _logger = logger;
+                _apiClient = httpClientFactory.CreateClient("GradeGridApi");
+            }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
@@ -63,38 +41,29 @@ namespace GradeGrid.MVC.Controllers
             return View();
         }
 
-
-        public IActionResult CoursePlanner()
+        public async Task<IActionResult> Analytics()
         {
-            var viewModel = new CoursePlannerViewModel() { Courses = courseList };
+            var evaluations = await _apiClient.GetFromJsonAsync<List<EvaluationItem>>("api/evaluationitems")?? new List<EvaluationItem>();
+            var totalCount = evaluations.Count;
+            var completedCount = evaluations.Count(e => e.Notes.Contains("Done", StringComparison.OrdinalIgnoreCase));
+            var completionPercent = totalCount == 0 ? 0 : (int)Math.Round(completedCount * 100.0 / totalCount);
 
-            return View(viewModel);
+            var upcoming = evaluations
+                .OrderBy(e => e.DueDate)
+                .Take(5)
+                .ToList();
+
+            ViewBag.CompletionPercent = completionPercent;
+            ViewBag.Upcoming = upcoming;
+
+            return View(evaluations);
         }
 
 
-        public IActionResult AssignmentsAndEvals(int? selectedItemId, int currentPage = 1)
+
+        public IActionResult Privacy()
         {
-            int pageSize = 4;
-
-            var viewModel = new AssignmentsAndEvalsViewModel();
-
-            if (!selectedItemId.HasValue && _allItems.Any())
-            {
-                selectedItemId = _allItems.First().Id;
-            }
-
-            viewModel.SelectedItemId = selectedItemId;
-            viewModel.SelectedItem = _allItems.FirstOrDefault(item => item.Id == selectedItemId);
-
-            viewModel.TotalPages = (int)Math.Ceiling(_allItems.Count / (double)pageSize);
-            viewModel.CurrentPage = currentPage;
-
-            viewModel.PaginatedItems = _allItems
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return View(viewModel);
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

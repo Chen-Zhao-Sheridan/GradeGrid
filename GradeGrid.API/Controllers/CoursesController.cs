@@ -1,8 +1,10 @@
-﻿using GradeGrid.API.DTOs;
+﻿using GradeGrid.Core;
+using GradeGrid.Core.DTOs;
 using GradeGrid.Core.Enums;
 using GradeGrid.Core.Models;
 using GradeGrid.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static GradeGrid.Core.CourseScheduleGenerator;
 
 namespace GradeGrid.API.Controllers
 {
@@ -11,10 +13,12 @@ namespace GradeGrid.API.Controllers
     public class CoursesController : Controller
     {
         private readonly ICourseRepository _courseRepository;
+        private readonly IScheduleGenerator _scheduleGenerator;
 
-        public CoursesController(ICourseRepository courseRepository)
+        public CoursesController(ICourseRepository courseRepository, IScheduleGenerator scheduleGenerator)
         {
             _courseRepository = courseRepository;
+            _scheduleGenerator = scheduleGenerator;
         }
 
         // eg: api/courses?term=Winter&year=2025 (gets should use query as to not need to send additional body info everytime)
@@ -154,6 +158,19 @@ namespace GradeGrid.API.Controllers
                 await _courseRepository.Update(course);
 
                 return Ok(section);
+            }
+        }
+
+        [HttpPost("generate_schedule")]
+        public async Task<ActionResult<List<GeneratedScheduleDto>>> GenerateSchedule(List<int> courseIds)
+        {
+            var courses = await _courseRepository.GetCoursesWithSections(courseIds);
+
+            if (courses == null || !courses.Any()) return BadRequest("No valid courses found for the provided IDs.");
+            else
+            {
+                var schedules = _scheduleGenerator.GenerateValidSchedules(courses);
+                return Ok(schedules);
             }
         }
     }

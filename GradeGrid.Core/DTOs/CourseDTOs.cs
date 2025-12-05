@@ -1,7 +1,7 @@
 ﻿using GradeGrid.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace GradeGrid.API.DTOs
+namespace GradeGrid.Core.DTOs
 {
     public class CreateCourseDto
     {
