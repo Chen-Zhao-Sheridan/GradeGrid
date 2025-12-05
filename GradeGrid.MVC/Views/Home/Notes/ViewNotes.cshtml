@@ -1,0 +1,34 @@
+@model GradeGrid.Core.Models.Note
+
+@{
+    ViewData["Title"] = "View Note";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a asp-action="NotesList" class="text-muted" style="font-size:1.1rem;">← Notes</a>
+        <a asp-action="NotesList" class="btn btn-outline-secondary">Done</a>
+    </div>
+
+    
+    <div class="text-center text-muted mb-3" style="font-size:0.9rem;">
+        @Model.CreatedDate.ToString("MMMM dd, yyyy 'at' HH:mm tt")
+    </div>
+
+   
+    <h2 class="fw-bold mb-3">@Model.Topic</h2>
+
+    
+    <div style="white-space: pre-wrap; font-size:1.1rem; line-height:1.6;">
+        @Model.Content
+    </div>
+
+   
+    <div class="mt-4 d-flex gap-3">
+        <a asp-action="EditNotes" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="DeleteNotes" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    </div>
+
+</div>

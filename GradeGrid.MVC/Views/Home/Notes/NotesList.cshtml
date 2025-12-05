@@ -1,0 +1,22 @@
+@using GradeGrid.Core.Models
+@using System.Data.Common
+@Model IEnumerable<GradeGrid.Core.Models.Note>
+
+@{
+    ViewData["Title"] = "Notes";
+}
+
+<h2 class="mb-3">Your Notes</h2>
+
+<a asp-action="CreateNotes" class="btn btn-primary mb-3">+ New Note</a>
+
+<ul class="list-group">
+    @foreach(var note in Model){
+        <li class="list-group-item">
+            <a asp-action="ViewNotes" asp-route-id="@note.Id" class="fw-bold" style="font-size: 1.1rem;">
+                @note.Topic
+            </a>
+            <div lass="text-muted">@note.CreatedDate.ToString("MMM dd, yyyy")</div>
+        </li>
+    }
+</ul>

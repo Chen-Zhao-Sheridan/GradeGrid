@@ -1,0 +1,38 @@
+@model GradeGrid.Core.Models.CalendarEvent
+
+<h2>Create Event</h2>
+
+<form method="post" asp-action="CreateEvent">
+    <div class="form-group mb-2">
+        <label>Title</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Course Name</label>
+        <input asp-for="CourseName" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Start Time</label>
+        <input asp-for="StartTime" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label>End Time</label>
+        <input asp-for="EndTime" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="form-check mb-3">
+        <input type="checkbox" asp-for="IsAcademic" class="form-check-input" />
+        <label class="form-check-label" for="IsAcademic">Academic Event?</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Weekly" class="btn btn-secondary ms-2">Cancel</a>
+</form>

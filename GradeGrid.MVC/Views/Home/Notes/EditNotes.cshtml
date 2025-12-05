@@ -1,0 +1,29 @@
+@model GradeGrid.Core.Models.Note
+
+@{
+    ViewData["Title"] = "Edit Note";
+}
+
+<h2>Edit Note</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+        <label>Class Title</label>
+        <input asp-for="ClassTitle" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Topic</label>
+        <input asp-for="Topic" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Content</label>
+        <textarea asp-for="Content" rows="8" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="NotesList" class="btn btn-secondary ms-2">Cancel</a>
+</form>

@@ -1,0 +1,23 @@
+@model GradeGrid.Core.Models.CalendarEvent
+
+<h2>@Model.Title</h2>
+
+<div class="text-muted mb-3">
+    @Model.StartTime.ToString("MMMM dd, yyyy — h:mm tt")
+    <br />
+    Ends @Model.EndTime.ToString("h:mm tt")
+</div>
+
+<p><strong>Course:</strong> @Model.CourseName</p>
+
+@if (!string.IsNullOrEmpty(Model.Description))
+{
+    <div class="mb-3">
+        <strong>Description:</strong>
+        <div>@Model.Description</div>
+    </div>
+}
+
+<a asp-action="EditEvent" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-action="DeleteEvent" asp-route-id="@Model.Id" class="btn btn-danger ms-2">Delete</a>
+<a asp-action="Weekly" class="btn btn-secondary ms-2">Back</a>

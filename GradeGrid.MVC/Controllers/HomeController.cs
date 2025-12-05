@@ -7,6 +7,7 @@ namespace GradeGrid.MVC.Controllers
 {
     public class HomeController : Controller
     {
+        /*
         private readonly ILogger<HomeController> _logger;
 
         private readonly List<Course> courseList = [
@@ -101,5 +102,7 @@ namespace GradeGrid.MVC.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        */
     }
+    
 }

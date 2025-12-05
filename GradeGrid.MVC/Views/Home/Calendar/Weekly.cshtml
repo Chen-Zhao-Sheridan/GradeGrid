@@ -1,0 +1,60 @@
+@model IEnumerable<GradeGrid.Core.Models.CalendarEvent>
+
+@{
+    ViewData["Title"] = "Weekly Calendar";
+
+    var timeSlots = Enumerable.Range(8, 12).ToList(); // 8AM–8PM
+    var days = new[]
+    {
+        DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+        DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday
+    };
+}
+
+<h2 class="mb-3">Weekly Calendar</h2>
+
+<a asp-action="CreateEvent" class="btn btn-success mb-3">+ Add Event</a>
+
+<table class="table table-bordered text-center align-middle">
+    <thead class="table-light">
+        <tr>
+            <th style="width: 80px;">Time</th>
+            @foreach (var day in days)
+            {
+                <th>@day</th>
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var hour in timeSlots)
+        {
+            <tr>
+                <td><strong>@hour:00</strong></td>
+
+                @foreach (var day in days)
+                {
+                    var evt = Model.FirstOrDefault(e =>
+                        e.StartTime.DayOfWeek == day &&
+                        e.StartTime.Hour == hour
+                    );
+
+                    if (evt != null)
+                    {
+                        <td style="background-color:#e9f7ff; border-left:4px solid #0d6efd;">
+                            <a asp-action="ViewEvent" asp-route-id="@evt.Id" style="text-decoration:none; color:inherit;">
+                                <div class="fw-bold">@evt.Title</div>
+                                <div>@evt.StartTime.ToString("h:mm tt") - @evt.EndTime.ToString("h:mm tt")</div>
+                                <div class="text-muted">@evt.CourseName</div>
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
