@@ -8,17 +8,16 @@ namespace GradeGrid.MVC.Controllers
     public class HomeController : Controller
     {
 
-        /*
+        
         private readonly ILogger<HomeController> _logger;
-=======
-            private readonly ILogger<HomeController> _logger;
-            private readonly HttpClient _apiClient;
 
-            public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
-            {
-                _logger = logger;
-                _apiClient = httpClientFactory.CreateClient("GradeGridApi");
-            }
+        private readonly HttpClient _apiClient;
+
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
+        {
+            _logger = logger;
+            _apiClient = httpClientFactory.CreateClient("GradeGridApi");
+        }
 
         public IActionResult Index()
         {
@@ -70,7 +69,7 @@ namespace GradeGrid.MVC.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        */
+        
     }
     
 }
