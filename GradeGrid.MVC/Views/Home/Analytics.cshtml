@@ -1,0 +1,83 @@
+@model GradeGrid.MVC.ViewModels.AnalyticsViewModel
+
+@{
+    ViewData["Title"] = "Analytics";
+}
+
+<h1>Analytics</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Total Items</h5>
+            <h2>@Model.TotalItems</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Overdue</h5>
+            <h2>@Model.OverdueItems</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Due This Week</h5>
+            <h2>@Model.DueThisWeek</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Due Next Week</h5>
+            <h2>@Model.DueNextWeek</h2>
+        </div>
+    </div>
+</div>
+
+<h3>Items by Type</h3>
+<table class="table table-striped mb-4">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var kv in Model.ItemsPerType)
+    {
+        <tr>
+            <td>@kv.Key</td>
+            <td>@kv.Value</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h3>Upcoming Items</h3>
+@if (!Model.UpcomingItems.Any())
+{
+    <p>No upcoming items.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Due Date</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.UpcomingItems)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Type</td>
+                <td>@item.DueDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.Notes</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
