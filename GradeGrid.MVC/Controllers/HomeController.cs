@@ -41,21 +41,42 @@ namespace GradeGrid.MVC.Controllers
 
         public async Task<IActionResult> Analytics()
         {
-            var evaluations = await _apiClient.GetFromJsonAsync<List<EvaluationItem>>("api/evaluationitems")?? new List<EvaluationItem>();
-            var totalCount = evaluations.Count;
-            var completedCount = evaluations.Count(e => e.Notes.Contains("Done", StringComparison.OrdinalIgnoreCase));
-            var completionPercent = totalCount == 0 ? 0 : (int)Math.Round(completedCount * 100.0 / totalCount);
+            var evaluations = await _apiClient
+                .GetFromJsonAsync<List<EvaluationItem>>("api/evaluationitems")
+                ?? new List<EvaluationItem>();
+
+            var today = DateTime.Today;
+            var next7Days = today.AddDays(7);
+            var next14Days = today.AddDays(14);
+
+            var total = evaluations.Count;
+            var overdue = evaluations.Count(e => e.DueDate.Date < today);
+            var thisWeek = evaluations.Count(e => e.DueDate.Date >= today && e.DueDate.Date <= next7Days);
+            var nextWeek = evaluations.Count(e => e.DueDate.Date > next7Days && e.DueDate.Date <= next14Days);
+
+            var itemsPerType = evaluations
+                .GroupBy(e => e.Type)
+                .ToDictionary(g => g.Key, g => g.Count());
 
             var upcoming = evaluations
+                .Where(e => e.DueDate.Date >= today)
                 .OrderBy(e => e.DueDate)
                 .Take(5)
                 .ToList();
 
-            ViewBag.CompletionPercent = completionPercent;
-            ViewBag.Upcoming = upcoming;
+            var model = new AnalyticsViewModel
+            {
+                TotalItems = total,
+                OverdueItems = overdue,
+                DueThisWeek = thisWeek,
+                DueNextWeek = nextWeek,
+                ItemsPerType = itemsPerType,
+                UpcomingItems = upcoming
+            };
 
-            return View(evaluations);
+            return View(model);
         }
+
 
 
 
