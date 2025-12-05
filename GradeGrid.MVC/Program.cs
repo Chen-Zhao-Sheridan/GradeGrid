@@ -8,7 +8,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddHttpClient("GradeGridApi", client =>
 {
-    var baseUrl = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:5000/";
+    var baseUrl = "https://localhost:7000/";
     client.BaseAddress = new Uri(baseUrl);
 });
 
