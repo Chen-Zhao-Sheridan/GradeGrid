@@ -78,9 +78,39 @@ namespace GradeGrid.MVC.Controllers
         }
 
         public IActionResult Analytics()
-        {
-            return View();
+{
+            var today = DateTime.Today;
+            var next7Days = today.AddDays(7);
+            var next14Days = today.AddDays(14);
+
+            var total = _evaluations.Count;
+            var overdue = _evaluations.Count(e => e.DueDate.Date < today);
+            var thisWeek = _evaluations.Count(e => e.DueDate.Date >= today && e.DueDate.Date <= next7Days);
+            var nextWeek = _evaluations.Count(e => e.DueDate.Date > next7Days && e.DueDate.Date <= next14Days);
+
+            var itemsPerType = _evaluations
+                .GroupBy(e => e.Type)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var upcoming = _evaluations
+                .Where(e => e.DueDate.Date >= today)
+                .OrderBy(e => e.DueDate)
+                .Take(5)
+                .ToList();
+
+            var model = new AnalyticsViewModel
+            {
+                TotalItems = total,
+                OverdueItems = overdue,
+                DueThisWeek = thisWeek,
+                DueNextWeek = nextWeek,
+                ItemsPerType = itemsPerType,
+                UpcomingItems = upcoming
+            };
+
+            return View(model);
         }
+
 
         public IActionResult Privacy()
         {
@@ -94,4 +124,3 @@ namespace GradeGrid.MVC.Controllers
         }
     }
 }
-    
