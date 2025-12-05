@@ -7,13 +7,12 @@ namespace GradeGrid.MVC.Controllers
 {
     public class HomeController : Controller
     {
-<<<<<<< HEAD
+
         /*
         private readonly ILogger<HomeController> _logger;
 =======
             private readonly ILogger<HomeController> _logger;
             private readonly HttpClient _apiClient;
->>>>>>> a5909737e8306bc0972e496404a4708510c48a3e
 
             public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
             {
