@@ -1,0 +1,137 @@
+@model GradeGrid.MVC.ViewModels.AnalyticsViewModel
+
+@{
+    ViewData["Title"] = "Analytics";
+
+    var maxTypeCount = Model.ItemsPerType.Any()
+        ? Model.ItemsPerType.Max(kv => kv.Value)
+        : 1;
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Analytics</h1>
+        <span class="text-muted">Overview of your current workload</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-1">Total Items</div>
+                    <div class="fs-3 fw-bold">@Model.TotalItems</div>
+                    <div class="text-secondary small mt-2">All upcoming and existing evaluations</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-1">Overdue</div>
+                    <div class="fs-3 fw-bold text-danger">@Model.OverdueItems</div>
+                    <div class="text-secondary small mt-2">Items with due dates in the past</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-1">Due This Week</div>
+                    <div class="fs-3 fw-bold text-primary">@Model.DueThisWeek</div>
+                    <div class="text-secondary small mt-2">Within the next 7 days</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-1">Due Next Week</div>
+                    <div class="fs-3 fw-bold text-success">@Model.DueNextWeek</div>
+                    <div class="text-secondary small mt-2">Days 8–14 from today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0">Items by Type</h5>
+                    <span class="text-muted small">How your workload is distributed</span>
+                </div>
+                <div class="card-body">
+                    @if (!Model.ItemsPerType.Any())
+                    {
+                        <p class="text-muted mb-0">No items to analyze yet.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var kv in Model.ItemsPerType.OrderByDescending(k => k.Value))
+                            {
+                                var percent = (int)Math.Round(kv.Value * 100.0 / maxTypeCount);
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="fw-semibold">@kv.Key</span>
+                                        <span class="text-muted small">@kv.Value item(s)</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: @percent%;"
+                                             aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">Upcoming Items</h5>
+                        <span class="text-muted small">Next few deadlines to watch</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (!Model.UpcomingItems.Any())
+                    {
+                        <p class="text-muted mb-0">No upcoming items. You’re all caught up 🎉</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Type</th>
+                                        <th>Due</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var item in Model.UpcomingItems)
+                                {
+                                    var isSoon = item.DueDate.Date <= DateTime.Today.AddDays(3);
+                                    <tr class="@(isSoon ? "table-warning" : "")">
+                                        <td class="fw-semibold">@item.Title</td>
+                                        <td>@item.Type</td>
+                                        <td>@item.DueDate.ToString("yyyy-MM-dd")</td>
+                                        <td class="text-muted">@item.Notes</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
