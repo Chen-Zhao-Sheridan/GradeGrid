@@ -1,10 +1,15 @@
 
+using GradeGrid.Core.Interfaces;
+using GradeGrid.Infrastructure;
 using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 
 builder.Services.AddHttpClient("GradeGridApi", client =>
 {
