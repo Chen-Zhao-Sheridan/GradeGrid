@@ -137,3 +137,27 @@ function formatTimeForInput(timeStr) {
     if (timeStr.length >= 5) return timeStr.substring(0, 5);
     return timeStr;
 }
+function openEditEvalModal(id) {
+    var myModal = new bootstrap.Modal(document.getElementById('editEvalModal'));
+    myModal.show();
+
+    $.get('/Evaluations/GetEvaluation?id=' + id, function (data) {
+        $('#edit_Id').val(data.id);
+        $('#edit_Title').val(data.title);
+        $('#edit_Type').val(data.type);
+        $('#edit_Notes').val(data.notes);
+
+        if (data.dueDate) {
+            let dt = new Date(data.dueDate);
+            dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+            $('#edit_DueDate').val(dt.toISOString().slice(0, 16));
+        }
+    });
+}
+
+function confirmEvalDelete(id) {
+    if (confirm("Are you sure you want to delete this item?")) {
+        $('#delete_Id').val(id);
+        $('#deleteEvalForm').submit();
+    }
+}
