@@ -15,7 +15,6 @@ namespace GradeGrid.API.Controllers
             _evaluationRepository = evaluationRepository;
         }
 
-        // GET: api/evaluationitems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EvaluationItem>>> GetAll()
         {
@@ -23,7 +22,6 @@ namespace GradeGrid.API.Controllers
             return Ok(items);
         }
 
-        // GET: api/evaluationitems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EvaluationItem>> GetById(int id)
         {
@@ -32,12 +30,41 @@ namespace GradeGrid.API.Controllers
             return Ok(item);
         }
 
-        // GET: api/evaluationitems/bycourse/3
-        [HttpGet("bycourse/{courseId}")]
-        public async Task<ActionResult<IEnumerable<EvaluationItem>>> GetByCourse(int courseId)
+        [HttpPost]
+        public async Task<ActionResult<EvaluationItem>> Create([FromBody] EvaluationItem request)
         {
-            var items = await _evaluationRepository.FindByCourseId(courseId);
-            return Ok(items);
+            await _evaluationRepository.Add(request);
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = request.Id },
+                request
+            );
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<EvaluationItem>> Update(int id, [FromBody] EvaluationItem request)
+        {
+            var existing = await _evaluationRepository.FindById(id);
+            if (existing == null) return NotFound();
+
+            existing.Title = request.Title;
+            existing.Type = request.Type;
+            existing.Notes = request.Notes;
+            existing.DueDate = request.DueDate;
+            existing.CourseId = request.CourseId;
+
+            await _evaluationRepository.Update(existing);
+            return Ok(existing);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existing = await _evaluationRepository.FindById(id);
+            if (existing == null) return NotFound();
+
+            await _evaluationRepository.Delete(id);
+            return NoContent();
         }
     }
 }
